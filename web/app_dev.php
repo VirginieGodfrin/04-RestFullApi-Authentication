@@ -1,7 +1,14 @@
 <?php
 
+// $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_REMOTE_USER'];
+// list($authType, $authKey) = explode(' ' , $_SERVER['HTTP_AUTHORIZATION']);
+// if( $authType=="Basic" ) { // manually get user and password
+// list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode($authKey));
+// }
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
+
 
 // If you don't want to setup permissions the proper way, just uncomment the following PHP line
 // read http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup

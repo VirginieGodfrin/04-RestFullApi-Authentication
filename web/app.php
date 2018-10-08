@@ -1,6 +1,14 @@
 <?php
 
+// $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_REMOTE_USER'];
+// list($authType, $authKey) = explode(' ' , $_SERVER['HTTP_AUTHORIZATION']);
+// if( $authType=="Basic" ) { // manually get user and password
+// list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode($authKey));
+// }
+
 use Symfony\Component\HttpFoundation\Request;
+
+
 
 /**
  * @var Composer\Autoload\ClassLoader
