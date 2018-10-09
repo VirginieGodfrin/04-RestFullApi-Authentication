@@ -18,17 +18,17 @@ class TokenController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-    	// $request->getUser() don't work
+        // $request->getUser() & $request->getPassword() work with built-in server
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
-            ->findOneBy(['username' => 'weaverryan']);
+            ->findOneBy(['username' => $request->getUser()]);
 
         if (!$user) {
             throw $this->createNotFoundException();
         }
         // $request->getPassword() don't work
         $isValid = $this->get('security.password_encoder')
-            ->isPasswordValid($user, 'I<3Pizza');
+            ->isPasswordValid($user, $request->getPassword());
 
         if (!$isValid) {
             throw new BadCredentialsException();
