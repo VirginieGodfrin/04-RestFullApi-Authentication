@@ -18,7 +18,7 @@ class TokenController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-        // $request->getUser() & $request->getPassword() work with built-in server
+        // $request->getUser() & $request->getPassword() work with built-in server 
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->findOneBy(['username' => $request->getUser()]);
