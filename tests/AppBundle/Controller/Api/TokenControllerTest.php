@@ -10,10 +10,6 @@ class TokenControllerTest extends ApiTestCase
 	public function testPOSTCreateToken()
     {
         $this->createUser('weaverryan', 'I<3Pizza');
-
-        $response = $this->client->get('/api/tokens', [ 
-            'data'
-        ]);
         
         $response = $this->client->post('/api/tokens', [ 
             'auth' => ['weaverryan', 'I<3Pizza']

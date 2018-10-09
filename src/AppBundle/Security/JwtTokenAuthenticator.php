@@ -2,47 +2,52 @@
 
 namespace AppBundle\Security;
 
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use AppBundle\Api\ApiProblem;
+use AppBundle\Api\ResponseFactory;
+use Doctrine\ORM\EntityManager;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use AppBundle\Entity\User;
+use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
+// this work with php 7.0 but not 7.2
 class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 {
-	private $jwtEncoder;
-
-    private $em;
+	private $jwtEncoder; 
+	private $em;
 
 	public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em)
 	{
 		$this->jwtEncoder = $jwtEncoder;
-        $this->em = $em;
+		$this->em = $em;
 	}
+		
 	// getCredentials: read the Authorization header and return the token
-	public function getCredentials(Request $request){
-		$extractor = new AuthorizationHeaderTokenExtractor( 
-			'Bearer',
-			'Authorization'
-		);
+	public function getCredentials(Request $request)
+    {
+    	// var_dump($data);
+    	$extractor = new AuthorizationHeaderTokenExtractor( 'Bearer', 'Authorization' );
+
 		$token = $extractor->extract($request);
 
 		if (!$token) { 
 			return;
 		}
+
 		return $token;
-	}
+    }
 
 	public function getUser($credentials, UserProviderInterface $userProvider) {
-		// decode the token $data is now an array of whatever information we originally put into the token
+		
 		$data = $this->jwtEncoder->decode($credentials);
-
+		
 		if ($data === false) {
             throw new CustomUserMessageAuthenticationException('Invalid Token');
         }
@@ -52,11 +57,12 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         return $this->em
             ->getRepository('AppBundle:User')
             ->findOneBy(['username' => $username]);
+
+        
 	}
 
 	public function checkCredentials($credentials, UserInterface $user) {
-		// no need to check password
-		return true;
+		return true; 
 	}
 
 	public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
@@ -68,5 +74,9 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 	}
 	public function supportsRememberMe() {
 		return false;
+	}
+
+	public function start(Request $request, AuthenticationException $authException = null) {
+		// TODO: Implement start() method.
 	}
 }

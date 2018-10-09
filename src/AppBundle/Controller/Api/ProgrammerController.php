@@ -24,7 +24,7 @@ class ProgrammerController extends BaseController
      */
     public function newAction(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        // $this->denyAccessUnlessGranted('ROLE_USER');
         $programmer = new Programmer();
         $form = $this->createForm(ProgrammerType::class, $programmer);
         $this->processForm($request, $form);
