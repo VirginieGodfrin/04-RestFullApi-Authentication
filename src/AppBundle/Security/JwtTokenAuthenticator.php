@@ -22,11 +22,13 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 {
 	private $jwtEncoder; 
 	private $em;
+	private $responseFactory;
 
-	public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em)
+	public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em, ResponseFactory $responseFactory)
 	{
 		$this->jwtEncoder = $jwtEncoder;
 		$this->em = $em;
+		$this->responseFactory = $responseFactory;
 	}
 		
 	// getCredentials: read the Authorization header and return the token
@@ -86,6 +88,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         $message = $authException ? $authException->getMessageKey() : 'Missing credentials';
         $apiProblem->set('detail', $message);
 
+        // return new JsonResponse($apiProblem->toArray(), 401);
         return $this->responseFactory->createResponse($apiProblem);
     }
 }
