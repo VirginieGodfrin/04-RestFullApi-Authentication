@@ -77,6 +77,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 	}
 
 	public function start(Request $request, AuthenticationException $authException = null) {
-		// TODO: Implement start() method.
+		
+		return new JsonResponse([ 'error' => 'auth required'], 401);
 	}
 }

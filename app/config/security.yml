@@ -6,7 +6,17 @@ security:
         database_users:
             entity: { class: AppBundle:User }
 
+
+    # because we have two very different authentication systems at work, 
+    # it's good use to splitting into two firewalls
     firewalls:
+        api:
+            pattern: ^/api/
+            anonymous: true
+            stateless: true
+            guard:
+                authenticators:
+                    - 'jwt_token_authenticator'
         main:
             pattern: ^/
             anonymous: true
@@ -14,14 +24,10 @@ security:
                 # The route name that the login form submits to
                 check_path: security_login_check
                 login_path: security_login_form
-        
+
             logout:
                 # The route name the user can go to in order to logout
                 path: security_logout
-
-            guard:
-                authenticators:
-                    - 'jwt_token_authenticator'
 
     access_control:
         - { path: ^/_wdt|_profiler, roles: IS_AUTHENTICATED_ANONYMOUSLY }
