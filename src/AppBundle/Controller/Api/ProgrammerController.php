@@ -18,6 +18,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
+/**
+* @Security("is_granted('ROLE_USER')")
+*/
 class ProgrammerController extends BaseController
 {
     // The only endpoint that requires authentication is newAction() .
@@ -27,7 +30,6 @@ class ProgrammerController extends BaseController
      */
     public function newAction(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
         $programmer = new Programmer();
         $form = $this->createForm(ProgrammerType::class, $programmer);
         $this->processForm($request, $form);
