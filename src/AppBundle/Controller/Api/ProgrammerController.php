@@ -15,16 +15,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 class ProgrammerController extends BaseController
 {
+    // The only endpoint that requires authentication is newAction() .
     /**
      * @Route("/api/programmers")
      * @Method("POST")
      */
     public function newAction(Request $request)
     {
-        // $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $programmer = new Programmer();
         $form = $this->createForm(ProgrammerType::class, $programmer);
         $this->processForm($request, $form);
@@ -33,7 +36,7 @@ class ProgrammerController extends BaseController
             $this->throwApiProblemValidationException($form);
         }
 
-        $programmer->setUser($this->findUserByUsername('weaverryan'));
+        $programmer->setUser($this->getUser());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($programmer);
