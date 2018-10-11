@@ -68,7 +68,9 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 	}
 
 	public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
-	// TODO: Implement onAuthenticationFailure() method.
+		$apiProblem = new ApiProblem(401);
+		$apiProblem->set('detail', $exception->getMessageKey());
+		return $this->responseFactory->createResponse($apiProblem);
 	}
 
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey) {
@@ -78,7 +80,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 		return false;
 	}
 
-	 public function start(Request $request, AuthenticationException $authException = null)
+	public function start(Request $request, AuthenticationException $authException = null)
     {
         // called when authentication info is missing from a
         // request that requires it
