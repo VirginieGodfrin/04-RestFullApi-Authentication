@@ -76,8 +76,16 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 		return false;
 	}
 
-	public function start(Request $request, AuthenticationException $authException = null) {
-		
-		return new JsonResponse([ 'error' => 'auth required'], 401);
-	}
+	 public function start(Request $request, AuthenticationException $authException = null)
+    {
+        // called when authentication info is missing from a
+        // request that requires it
+
+        $apiProblem = new ApiProblem(401);
+        // you could translate this
+        $message = $authException ? $authException->getMessageKey() : 'Missing credentials';
+        $apiProblem->set('detail', $message);
+
+        return $this->responseFactory->createResponse($apiProblem);
+    }
 }
